@@ -18,8 +18,8 @@ const getById = async (contactId) => {
 };
 
 // add new contact in database and return it after adding
-const addContact = async (body) => {
-  const { name, email, phone } = body;
+const addContact = async (data) => {
+  const { name, email, phone } = data;
   const contacts = await listContacts();
   const newContact = { id: nanoid(), name, email, phone };
 
@@ -42,12 +42,13 @@ const removeContact = async (contactId) => {
 };
 
 // update some features in contact (by ID of this contact) and return it
-const updateContact = async (contactId, body) => {
+const updateContact = async (contactId, data) => {
   const contacts = await listContacts();
   const idx = contacts.findIndex((item) => item.id === contactId.toString());
 
   if (idx === -1) return null;
-  contacts[idx] = { contactId, ...body };
+  contacts[idx] = { id: contactId, ...data };
+
   await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
   return contacts[idx];
 };

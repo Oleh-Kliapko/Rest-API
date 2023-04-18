@@ -3,9 +3,9 @@ const DB_HOST =
   "mongodb+srv://goldclub1977:Ro300979koa@kliapko-restapi.ob2szcn.mongodb.net/db-contacts?retryWrites=true&w=majority";
 
 const app = require("./app");
-const { error } = require("./schemas/contacts");
 
 mongoose.set("strictQuery", true);
+
 mongoose
   .connect(DB_HOST)
   .then(() =>

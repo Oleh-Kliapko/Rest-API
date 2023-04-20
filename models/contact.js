@@ -6,7 +6,13 @@ const { handleMongooseError, patterns } = require("../helpers");
 // validate input data from frontend
 const validationContact = Joi.object({
   name: Joi.string().required(),
-  email: Joi.string().required(),
+  email: Joi.string()
+    .email({ minDomainSegments: 2 })
+    .messages({
+      "string.pattern.base":
+        "Invalid email. Please provide a valid email address",
+    })
+    .required(),
   phone: Joi.string().required(),
   favorite: Joi.boolean(),
 });
@@ -44,15 +50,6 @@ const contactSchema = new Schema(
     email: {
       type: String,
       unique: true,
-      validate: [
-        {
-          validator: function (v) {
-            return patterns.emailPattern.test(v);
-          },
-          message: (props) =>
-            `${props.value} is an invalid email. Please provide a valid email address`,
-        },
-      ],
       required: [
         true,
         "The email is required. Please provide an email address for the contact",

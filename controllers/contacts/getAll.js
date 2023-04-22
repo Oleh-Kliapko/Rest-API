@@ -5,23 +5,13 @@ const getAll = async (req, res) => {
   const { page = 1, limit = 20, favorite } = req.query;
   const skip = (page - 1) * limit;
 
-  if (!favorite) {
-    const result = await Contact.find({ owner }, "-createdAt -updatedAt", {
-      skip,
-      limit,
-    }).populate("owner", "email subscription");
-    res.json(result);
-  } else {
-    const result = await Contact.find(
-      { owner, favorite },
-      "-createdAt -updatedAt",
-      {
-        skip,
-        limit,
-      }
-    ).populate("owner", "email subscription");
-    res.json(result);
-  }
+  const filter = favorite ? { owner, favorite } : { owner };
+
+  const result = await Contact.find(filter, "-createdAt -updatedAt", {
+    skip,
+    limit,
+  }).populate("owner", "email subscription");
+  res.json(result);
 };
 
 module.exports = getAll;

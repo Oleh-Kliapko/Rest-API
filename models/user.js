@@ -11,9 +11,12 @@ const validationRegistrationUser = Joi.object({
   email: Joi.string()
     .email({ minDomainSegments: 2 })
     .pattern(patterns.emailPattern)
+    .messages({
+      "string.pattern.base":
+        "Invalid email. Please provide a valid email address",
+    })
     .required(),
-  subscription: Joi.string(),
-  // token: Joi.string().required(),
+  subscription: Joi.string().valid(...SUBSCRIPTION_TYPES),
 });
 
 // login validation user
@@ -23,8 +26,12 @@ const validationLoginUser = Joi.object({
     .email({ minDomainSegments: 2 })
     .pattern(patterns.emailPattern)
     .required(),
-  subscription: Joi.string(),
-  // token: Joi.string().required(),
+  subscription: Joi.string().valid(...SUBSCRIPTION_TYPES),
+});
+
+// validation subscription
+const validationSubscription = Joi.object({
+  subscription: Joi.string().valid(...SUBSCRIPTION_TYPES),
 });
 
 // validate data after validation of input data before saving this data in DB
@@ -37,11 +44,6 @@ const userSchema = new Schema(
           validator: (v) => v.length >= 6,
           message: (props) =>
             `Invalid password. Must be at least 6 characters. Got ${props.value.length}`,
-        },
-        {
-          validator: (v) => v.length <= 30,
-          message: (props) =>
-            `Invalid password. Must be no more 30 characters. Got ${props.value.length}`,
         },
       ],
       required: [true, "The password is required. Set it for user"],
@@ -70,7 +72,7 @@ const userSchema = new Schema(
           )}`,
       },
     },
-    token: String,
+    token: { type: String, default: "" },
   },
   { versionKey: false, timestamps: true }
 );
@@ -82,4 +84,5 @@ module.exports = {
   User,
   validationRegistrationUser,
   validationLoginUser,
+  validationSubscription,
 };

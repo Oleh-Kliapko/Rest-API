@@ -2,6 +2,7 @@ const { Contact } = require("../../models");
 const { HttpError } = require("../../helpers");
 
 const addContact = async (req, res) => {
+  const { _id: owner } = req.user;
   const { email, phone } = req.body;
   const contactEmail = await Contact.findOne({ email });
   const contactPhone = await Contact.findOne({ phone });
@@ -18,7 +19,7 @@ const addContact = async (req, res) => {
     );
   }
 
-  const result = await Contact.create(req.body);
+  const result = await Contact.create({ ...req.body, owner });
   return res.status(201).json(result);
 };
 

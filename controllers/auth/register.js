@@ -1,10 +1,12 @@
+const bcrypt = require("bcrypt");
+
 const { User } = require("../../models");
 const { HttpError } = require("../../helpers");
 
 const register = async (req, res) => {
-  const { email, subscription } = req.body;
-  const user = await User.findOne({ email });
+  const { email, subscription, password } = req.body;
 
+  const user = await User.findOne({ email });
   if (user) {
     throw HttpError(
       409,
@@ -12,7 +14,9 @@ const register = async (req, res) => {
     );
   }
 
-  await User.create(req.body);
+  const hashPassword = await bcrypt.hash(password, 10);
+
+  await User.create({ ...req.body, password: hashPassword });
   return res.status(201).json({ email, subscription });
 };
 

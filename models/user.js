@@ -34,7 +34,7 @@ const validationSubscription = Joi.object({
   subscription: Joi.string().valid(...SUBSCRIPTION_TYPES),
 });
 
-// validate data after validation of input data before saving this data in DB
+// mongoose Schema
 const userSchema = new Schema(
   {
     password: {
@@ -73,6 +73,10 @@ const userSchema = new Schema(
       },
     },
     token: { type: String, default: "" },
+    avatarURL: {
+      type: String,
+      required: true,
+    },
   },
   { versionKey: false, timestamps: true }
 );

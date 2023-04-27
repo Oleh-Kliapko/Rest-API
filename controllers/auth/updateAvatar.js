@@ -1,21 +1,21 @@
 const fs = require("fs/promises");
 const path = require("path");
-const Jimp = require("jimp");
 
 const { User } = require("../../models");
-const { HttpError } = require("../../helpers");
+const { HttpError, modifyImage } = require("../../helpers");
 
 const avatarDir = path.join(__dirname, "../../", "public", "avatars");
 const avatarExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "tiff"];
 
 const updateAvatar = async (req, res) => {
+  console.log(req.file);
   const { _id } = req.user;
   const { path: tempUpload, originalname } = req.file;
   const avatarName = `${_id}_${originalname}`;
 
   const fileExtension = originalname.substring(
     originalname.lastIndexOf(".") + 1
-  );
+  ); // Check extension of avatar
 
   if (!avatarExtensions.includes(fileExtension.toLowerCase())) {
     throw HttpError(
@@ -28,14 +28,7 @@ const updateAvatar = async (req, res) => {
 
   const resultUpload = path.join(avatarDir, avatarName);
 
-  // Use Jimp to modify the image
-  const image = await Jimp.read(tempUpload);
-  await image
-    .autocrop()
-    .cover(250, 250)
-    .quality(60)
-    .greyscale()
-    .writeAsync(tempUpload);
+  await modifyImage(tempUpload); // Use Jimp to modify the image
 
   await fs.rename(tempUpload, resultUpload);
 

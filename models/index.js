@@ -4,6 +4,7 @@ const {
   validationRegistrationUser,
   validationLoginUser,
   validationSubscription,
+  validationEmailUser,
 } = require("./user");
 
 module.exports = {
@@ -14,4 +15,5 @@ module.exports = {
   validationRegistrationUser,
   validationLoginUser,
   validationSubscription,
+  validationEmailUser,
 };

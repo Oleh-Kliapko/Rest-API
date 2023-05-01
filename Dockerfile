@@ -14,7 +14,8 @@ RUN npm install
 COPY . .
 
 # set port
-EXPOSE 3000
+ENV PORT 3000
+EXPOSE $PORT
 
 # launch a command when our image is starting
 CMD ["node", "server.js"]

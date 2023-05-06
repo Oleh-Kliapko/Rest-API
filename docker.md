@@ -1,6 +1,6 @@
 `docker version` - версія докера
 `docker pull node` - качаємо ноду
-`docker build -t <image-name-or-id> .` - створення свого іменованого образу
+`docker build -t <image-name> .` - створення свого іменованого образу
 `docker images` - список образів
 `docker image inspect <image-name-or-id>` - інформація по образу
 `docker rmi <image-name-or-id>` - видаляємо образ

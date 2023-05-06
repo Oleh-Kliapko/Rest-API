@@ -1,37 +1,48 @@
 const { Schema, model } = require("mongoose");
 const Joi = require("joi");
 
-const { handleMongooseError, patterns } = require("../helpers");
+const {
+  handleMongooseError,
+  patterns,
+  templatesMsgJoi,
+} = require("../helpers");
 
 const SUBSCRIPTION_TYPES = ["starter", "pro", "business"];
 
 // registration validation user
 const validationRegistrationUser = Joi.object({
-  password: Joi.string().required(),
+  password: Joi.string().required().messages(templatesMsgJoi("password")),
   email: Joi.string()
     .email({ minDomainSegments: 2 })
     .pattern(patterns.emailPattern)
-    .messages({
-      "string.pattern.base":
-        "Invalid email. Please provide a valid email address",
-    })
-    .required(),
+    .required()
+    .messages(templatesMsgJoi("email")),
   subscription: Joi.string().valid(...SUBSCRIPTION_TYPES),
 });
 
 // login validation user
 const validationLoginUser = Joi.object({
-  password: Joi.string().required(),
+  password: Joi.string().required().messages(templatesMsgJoi("password")),
   email: Joi.string()
     .email({ minDomainSegments: 2 })
     .pattern(patterns.emailPattern)
-    .required(),
+    .required()
+    .messages(templatesMsgJoi("email")),
   subscription: Joi.string().valid(...SUBSCRIPTION_TYPES),
 });
 
 // validation subscription
 const validationSubscription = Joi.object({
   subscription: Joi.string().valid(...SUBSCRIPTION_TYPES),
+});
+
+// validation email
+const validationEmailUser = Joi.object({
+  email: Joi.string()
+    .email({ minDomainSegments: 2 })
+    .pattern(patterns.emailPattern)
+    .required()
+    .messages(templatesMsgJoi("email")),
 });
 
 // mongoose Schema
@@ -72,8 +83,19 @@ const userSchema = new Schema(
           )}`,
       },
     },
-    token: { type: String, default: "" },
+    token: {
+      type: String,
+      default: "",
+    },
     avatarURL: String,
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      default: "",
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -86,4 +108,5 @@ module.exports = {
   validationRegistrationUser,
   validationLoginUser,
   validationSubscription,
+  validationEmailUser,
 };
